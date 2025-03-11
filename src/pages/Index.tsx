@@ -1,6 +1,8 @@
+
 import { Card } from "@/components/ui/card";
 import { DollarSign, PieChart, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
+import SalesForecastChart from "@/components/SalesForecastChart";
 
 const data = [
   { name: "Jan", value: 2400 },
@@ -63,6 +65,9 @@ const Index = () => {
           </div>
         </Card>
       </div>
+
+      {/* Sales Forecasting Section */}
+      <SalesForecastChart />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="glass-card p-6 lg:col-span-2">
