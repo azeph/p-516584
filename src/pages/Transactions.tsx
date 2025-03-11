@@ -1,29 +1,35 @@
-import { Card } from "@/components/ui/card";
-import { PieChart } from "lucide-react";
 
-const Transactions = () => {
+import { Card } from "@/components/ui/card";
+import { Package, AlertTriangle } from "lucide-react";
+
+const Stock = () => {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-4xl font-bold text-primary">Transactions</h1>
-        <p className="text-secondary-foreground">Recent financial activity</p>
+        <h1 className="text-4xl font-bold text-primary">Stock Management</h1>
+        <p className="text-secondary-foreground">Monitor and manage your inventory levels</p>
       </header>
 
       <Card className="glass-card p-6">
-        <h3 className="text-lg font-semibold mb-4">Recent Transactions</h3>
+        <h3 className="text-lg font-semibold mb-4">Current Stock Levels</h3>
         <div className="space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex items-center justify-between p-4 hover:bg-white/5 rounded-lg transition-colors">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-muted rounded-full">
-                  <PieChart className="h-4 w-4" />
+                  <Package className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="font-medium">Shopping</p>
-                  <p className="text-sm text-muted-foreground">2 hours ago</p>
+                  <p className="font-medium">Product {i}</p>
+                  <p className="text-sm text-muted-foreground">{Math.floor(Math.random() * 100)} units in stock</p>
                 </div>
               </div>
-              <p className="font-medium text-red-500">-$150.00</p>
+              {Math.random() > 0.7 && (
+                <div className="flex items-center text-yellow-500">
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  <p className="font-medium">Low Stock</p>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -32,4 +38,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default Stock;

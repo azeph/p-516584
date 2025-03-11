@@ -1,11 +1,11 @@
-import { Home, PieChart, Settings, User, CreditCard, Bell } from "lucide-react";
+import { Package, BarChart3, PackageCheck, Bell, User, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 
 const menuItems = [
-  { icon: Home, label: "Dashboard", path: "/" },
-  { icon: PieChart, label: "Analytics", path: "/analytics" },
-  { icon: CreditCard, label: "Transactions", path: "/transactions" },
+  { icon: Package, label: "Dashboard", path: "/" },
+  { icon: BarChart3, label: "Analytics", path: "/analytics" },
+  { icon: PackageCheck, label: "Stock", path: "/transactions" },
   { icon: Bell, label: "Notifications", path: "/notifications" },
   { icon: User, label: "Profile", path: "/profile" },
   { icon: Settings, label: "Settings", path: "/settings" },
