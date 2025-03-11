@@ -1,4 +1,3 @@
-
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
@@ -58,7 +57,7 @@ const SalesForecastChart = () => {
               <XAxis 
                 dataKey="month" 
                 axisLine={false}
-                tick={{ angle: 0, fontSize: 12 }}
+                tick={{ fontSize: 12 }}
                 height={70}
               />
               <YAxis 
