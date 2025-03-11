@@ -1,23 +1,11 @@
+
+import { useEffect, useState } from "react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, RefreshCcw } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend } from "recharts";
-
-// Sample data with seasonal product forecasting
-const seasonalProductData = [
-  { month: "Jan", topProduct: "Winter Wear", salesPotential: 85, secondProduct: "Hot Beverages", secondSalesPotential: 75 },
-  { month: "Feb", topProduct: "Flowers & Gifts", salesPotential: 95, secondProduct: "Chocolates", secondSalesPotential: 90 },
-  { month: "Mar", topProduct: "Spring Clothing", salesPotential: 80, secondProduct: "Garden Supplies", secondSalesPotential: 75 },
-  { month: "Apr", topProduct: "Rain Gear", salesPotential: 85, secondProduct: "Home Decor", secondSalesPotential: 70 },
-  { month: "May", topProduct: "Summer Clothes", salesPotential: 90, secondProduct: "Sunscreen", secondSalesPotential: 85 },
-  { month: "Jun", topProduct: "Beverages", salesPotential: 95, secondProduct: "Ice Cream", secondSalesPotential: 90 },
-  { month: "Jul", topProduct: "Cold Drinks", salesPotential: 100, secondProduct: "Beach Items", secondSalesPotential: 95 },
-  { month: "Aug", topProduct: "Back to School", salesPotential: 95, secondProduct: "Electronics", secondSalesPotential: 90 },
-  { month: "Sep", topProduct: "Fall Clothing", salesPotential: 85, secondProduct: "Home Appliances", secondSalesPotential: 80 },
-  { month: "Oct", topProduct: "Halloween Items", salesPotential: 90, secondProduct: "Decorations", secondSalesPotential: 85 },
-  { month: "Nov", topProduct: "Candles & Decor", salesPotential: 95, secondProduct: "Winter Gear", secondSalesPotential: 85 },
-  { month: "Dec", topProduct: "Gift Items", salesPotential: 100, secondProduct: "Holiday Decorations", secondSalesPotential: 95 },
-];
+import { wooCommerceApi, ProductsByMonth } from "@/services/woocommerceApi";
+import { useQuery } from "@tanstack/react-query";
 
 const chartConfig = {
   topProduct: {
@@ -37,16 +25,71 @@ const chartConfig = {
 };
 
 const SalesForecastChart = () => {
+  const { data: seasonalProductData, isLoading, error, refetch } = useQuery({
+    queryKey: ['seasonalProductForecast'],
+    queryFn: () => wooCommerceApi.getSeasonalProductForecast(),
+  });
+
+  if (isLoading) {
+    return (
+      <Card className="glass-card p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Seasonal Product Forecast</h3>
+          <div className="p-2 bg-purple-100 rounded-full animate-spin">
+            <RefreshCcw className="h-4 w-4 text-purple-600" />
+          </div>
+        </div>
+        <p className="text-sm text-muted-foreground mb-6">
+          Loading forecast data from WooCommerce API...
+        </p>
+        <div className="h-[400px] w-full flex items-center justify-center">
+          <p>Loading chart data...</p>
+        </div>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="glass-card p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Seasonal Product Forecast</h3>
+          <button 
+            onClick={() => refetch()}
+            className="p-2 bg-purple-100 rounded-full hover:bg-purple-200 transition-colors"
+          >
+            <RefreshCcw className="h-4 w-4 text-purple-600" />
+          </button>
+        </div>
+        <p className="text-sm text-muted-foreground mb-6">
+          Error loading data from WooCommerce API
+        </p>
+        <div className="p-4 bg-red-50 rounded-lg text-red-600">
+          Failed to fetch seasonal product forecast. Please check your API configuration and try again.
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="glass-card p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Seasonal Product Forecast</h3>
-        <div className="p-2 bg-purple-100 rounded-full">
-          <TrendingUp className="h-4 w-4 text-purple-600" />
+        <div className="flex gap-2">
+          <button 
+            onClick={() => refetch()} 
+            className="p-2 bg-purple-100 rounded-full hover:bg-purple-200 transition-colors"
+            title="Refresh data"
+          >
+            <RefreshCcw className="h-4 w-4 text-purple-600" />
+          </button>
+          <div className="p-2 bg-purple-100 rounded-full">
+            <TrendingUp className="h-4 w-4 text-purple-600" />
+          </div>
         </div>
       </div>
       <p className="text-sm text-muted-foreground mb-6">
-        Recommended products to stock based on seasonal trends
+        Recommended products to stock based on seasonal trends from WooCommerce
       </p>
       
       <div className="h-[400px] w-full">
@@ -65,7 +108,7 @@ const SalesForecastChart = () => {
                 width={50}
                 axisLine={false}
                 tick={{ fontSize: 12 }}
-                label={{ value: 'Sales Potential', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
+                label={{ value: 'Sales Potential', position: 'insideLeft', style: { textAnchor: 'middle' } }}
               />
               <ChartTooltip
                 content={
@@ -102,13 +145,13 @@ const SalesForecastChart = () => {
         <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg">
           <div className="text-sm font-medium">Current Month Focus</div>
           <div className="mt-1 text-lg font-bold text-purple-600">
-            {seasonalProductData[new Date().getMonth()].topProduct}
+            {seasonalProductData && seasonalProductData[new Date().getMonth()]?.topProduct}
           </div>
         </div>
         <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg">
           <div className="text-sm font-medium">Next Month Preparation</div>
           <div className="mt-1 text-lg font-bold text-purple-600">
-            {seasonalProductData[(new Date().getMonth() + 1) % 12].topProduct}
+            {seasonalProductData && seasonalProductData[(new Date().getMonth() + 1) % 12]?.topProduct}
           </div>
         </div>
         <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-lg md:col-span-2 lg:col-span-1">
